@@ -1,0 +1,271 @@
+---
+meta_title: "link from MD quarto FRESH FRESHY"
+title: link from MD quarto FRESH FRESHY
+description: "A quick analysis of the penguin dataset"
+date: 2024-09-16
+image: "/asset/culmen_depth.png"
+categories: ["Data Science"]
+author: "John Doe"
+tags: ["R", "penguins"]
+draft: false
+
+format: 
+  hugo-md: 
+    variant: gfm 
+    output-ext: md 
+    keep-yaml: true
+---
+
+## Introduction
+
+This document offers a straightforward analysis of the well-known penguin dataset. It is designed to complement the [Productive R Workflow](https://www.productive-r-workflow.com) online course.
+
+You can read more about the penguin dataset [here](https://allisonhorst.github.io/palmerpenguins/).
+
+Let's load libraries before we start!
+
+```{r, message=F, warning=F}
+#| label: chunk-library
+# load the tidyverse
+pacman::p_load(tidyverse,
+  patchwork,
+  knitr)     # combine charts together
+```
+
+
+## Loading data
+
+The dataset has already been loaded and cleaned in the previous step of this pipeline.
+
+Let's load the clean version, together with a few functions available in `functions.R`.
+
+```{r}
+# Source functions
+
+# Read the clean dataset
+data <- readRDS(file = "../01_input/data_pengvin.rds")
+```
+
+
+![Bill measurement explanation](asset/culmen_depth.png){width=300 fig.cap="Bill measurement explanation"}
+
+
+
+
+## Bill Length and Bill Depth
+
+Now, let's make some descriptive analysis, including <b>summary statistics</b> and <b>graphs</b>.
+
+What's striking is the <b>slightly negative relationship</b> between `bill length` and `bill depth`:
+
+```{r, dev='png', dev.args=list(bg="transparent")}
+#| fig.align: center
+#| fig.width: 5
+#| fig.height: 5
+#| warning: false
+#| fig.cap: "Relationship between bill <b>length</b> and bill <b>depth</b>.<br><b>All</b> data points included."
+
+
+# {r, fig.align = "center", fig.width=5, fig.height=5, warning=FALSE, fig.cap="Relationship between bill <b>length</b> and bill <b>depth</b>. <b>All</b> data points included."}
+
+data %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+    geom_point(color = "#69b3a2") +
+    labs(
+      x = "Bill Length (mm)",
+      y = "Bill Depth (mm)",
+      title = "Surprising relationship?"
+    ) +
+    theme(
+      legend.position = "none",
+      panel.background = element_rect(fill = 'transparent', color = NA),
+      plot.background  = element_rect(fill = 'transparent', color = NA),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line = element_line(color = "black", size = 0.5), # draws x and y axis lines only
+      legend.background = element_rect(fill='transparent'),
+      legend.box.background = element_rect(fill='transparent')
+    )
+ 
+```
+
+It is also interesting to note that `bill length` a and `bill depth` are quite different from one specie to another. This is summarized in the 2 tables below:
+
+```{r}
+#| echo: false
+data %>%
+ group_by(species) %>% 
+  summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE)) %>%
+  knitr::kable()
+
+```
+
+```{r}
+#| layout-ncol: 2
+
+data %>%
+ group_by(species) %>% 
+  summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE)) %>%
+  knitr::kable()
+
+data %>%
+ group_by(species) %>% 
+  summarise(average_bill_depth = mean(bill_depth_mm, na.rm = TRUE)) %>%
+  knitr::kable()
+```
+
+It is also interesting to note that `bill length` a and `bill depth` are quite different from one specie to another. This is summarized in the 2 tables below:
+
+## one columna
+<!-- table1:start -->
+::: {style="display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; text-align: center; width: 100px; padding: 100px;"}
+::: {.columns}
+### Average Bill Dimensions by Species
+```{r}
+#| echo: false
+data %>%
+  group_by(species) %>% 
+  summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE))
+```
+:::
+:::
+<!-- table1:end -->
+## Two columnas
+
+<!-- table2:start -->
+::: {.columns}
+
+::: {.column width="50%"}
+### Average Bill Dimensions by Species
+```{r}
+#| echo: false
+data %>%
+  group_by(species) %>% 
+  summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE))
+```
+
+:::
+
+::: {.column width="50%"}
+
+### Average bill depth by species
+```{r}
+#| echo: false
+data %>%
+  group_by(species) %>% 
+  summarise(average_bill_depth = mean(bill_depth_mm, na.rm = TRUE))
+```
+:::
+
+:::
+<!-- table2:end -->
+
+<!-- 
+<div style="display: flex; gap: 2rem;">
+
+  <div style="flex: 1;">
+  ### Average Bill Length by Species
+
+    ```{r}
+
+      data %>%
+        group_by(species) %>% 
+        summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE)) %>%
+        knitr::kable()
+    ```
+  </div> 
+
+  <div style="flex: 1;"> 
+  ### Average Bill Depth by Species
+
+    ```{r}
+    data %>%
+      group_by(species) %>% 
+      summarise(average_bill_depth = mean(bill_depth_mm, na.rm = TRUE)) %>%
+      knitr::kable()
+    ```
+
+  </div> 
+</div> 
+ -->
+
+## OR
+
+
+<div style="display: flex; gap: 2rem;">
+
+  <div style="flex: 1;">
+    <h5>Average Bill Length by Species</h5>
+
+    ```r
+    data %>%
+      group_by(species) %>% 
+      summarise(average_bill_length = mean(bill_length_mm, na.rm = TRUE)) %>%
+      knitr::kable()
+    ```
+  </div> 
+  
+  <div style="flex: 1;">   
+    <h5>Average Bill Depth by Species</h5>
+
+    ```r
+    data %>%
+      group_by(species) %>% 
+      summarise(average_bill_depth = mean(bill_depth_mm, na.rm = TRUE)) %>%
+      knitr::kable()
+    ```
+  </div>
+  
+ </div> 
+
+Now, let's check the relationship between bill depth and bill length for the specie `Adelie` on the island `Torgersen`:
+
+```{r, dev='png', dev.args=list(bg="transparent")}
+#| warning: false
+#| fig.height: 3
+#| fig.width: 9
+#| fig.cap: "There is actually a positive correlation when split by species."
+
+create_scatterplot <- function(data, selected_species, color) {
+  # Filter the data for the specified species and island
+  filtered_data <- data %>%
+    na.omit() %>%
+    filter(species == selected_species)
+  
+  # Create the scatterplot
+  plot <- ggplot(
+    filtered_data,
+    aes(x = bill_length_mm, y = bill_depth_mm)
+  ) +
+    geom_point(color=color) +
+    labs(
+      x = "Bill Length (mm)",
+      y = "Bill Depth (mm)",
+      title = selected_species
+    )  +
+    theme(
+      legend.position = "none",
+      panel.background = element_rect(fill = 'transparent', color = NA),
+      plot.background  = element_rect(fill = 'transparent', color = NA),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line = element_line(color = "black", size = 0.5), # draws x and y axis lines only
+      legend.background = element_rect(fill='transparent'),
+      legend.box.background = element_rect(fill='transparent')
+    )
+  
+  return(plot)
+
+}
+
+# Use the function in functions.R
+p1 <- create_scatterplot(data, "Adelie", "#6689c6")
+p2 <- create_scatterplot(data, "Chinstrap", "#e85252")
+p3 <- create_scatterplot(data, "Gentoo", "#9a6fb0")
+
+test <- p1 + p2 + p3 
+
+test  & theme(plot.background = element_rect(fill='transparent', color=NA))
+```
+
+

@@ -1,0 +1,15 @@
+project:
+  type: hugo
+  output-dir: content
+  post-render:
+    - python scripts/postprocess_md.py
+
+format:
+  hugo-md:
+    code-fold: true
+    #filters:
+    #  - filters/figure-wrapper.lua
+    
+execute:
+  warning: false
+

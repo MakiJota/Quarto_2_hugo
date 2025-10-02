@@ -3,18 +3,24 @@ import re
 
 print("=== Python postprocessor STARTED ===")
 
-# Path to the content folder
-content_dir = "content/scripts/"
+# Path to the content folder maybe need to change
+content_dir = "content/"
 
-# Find the first .md file (alphabetically)
-md_files = [f for f in sorted(os.listdir(content_dir)) if f.endswith(".md")]
+# Find the first .md file (alphabetically), also inside subfolders
+md_files = []
+for root, dirs, files in os.walk(content_dir):
+    for f in files:
+        if f.endswith(".md"):
+            md_files.append(os.path.relpath(os.path.join(root, f), content_dir))
+
+md_files = sorted(md_files)
 print(md_files)
+
 if not md_files:
     raise FileNotFoundError("No .md files found in content/")
 
 input_file = os.path.join(content_dir, md_files[0])
 print("Processing first Markdown file:", input_file)
-
 # Read Markdown
 with open(input_file, "r", encoding="utf-8") as f:
     md = f.read()
